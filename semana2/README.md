@@ -2,7 +2,7 @@
 
 - **Clase 1 — [Assignment 2.1](../assignments/semana02_clase01_assignment.pdf):** crear el proyecto local `env-demo`, ejecutar una misma base de código en DEV/PRE/PRO, comprobarla con tests y registrar tres commits locales.
 
-    - __Santi__: el assignment 2.1 está hecho en el repo ![primer-proyecto-uv](https://github.com/Chicloneo/primer-proyecto-uv)
+    - __Santi__: el assignment 2.1 está hecho en el repo [primer-proyecto-uv](https://github.com/Chicloneo/primer-proyecto-uv)
 
 - **Clase 2 — [Assignment 2.2](../assignments/semana02_clase02_assignment.pdf):** reorganizar el caso Wine de S1, comprobarlo y trabajar con una rama, `push` y pull request contra `main` del fork de la pareja.
 
