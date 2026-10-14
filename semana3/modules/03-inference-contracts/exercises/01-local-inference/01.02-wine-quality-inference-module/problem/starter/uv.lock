@@ -13,12 +13,6 @@ resolution-markers = [
     "python_full_version < '3.12' and sys_platform != 'emscripten' and sys_platform != 'win32'",
 ]
 
-[manifest]
-members = [
-    "model-inference",
-    "wine-inference-starter",
-]
-
 [[package]]
 name = "annotated-types"
 version = "0.8.0"
@@ -329,11 +323,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/bd/c0/9f7c9a46090390368
 wheels = [
     { url = "https://files.pythonhosted.org/packages/41/09/5b161152e2d90f7b87f781c2e1267494aef9c32498df793f73ad0a0a494a/matplotlib_inline-0.2.2-py3-none-any.whl", hash = "sha256:3c821cf1c209f59fb2d2d64abbf5b23b67bcb2210d663f9918dd851c6da1fcf6", size = 9534, upload-time = "2026-05-08T17:33:32.055Z" },
 ]
-
-[[package]]
-name = "model-inference"
-version = "0.1.0"
-source = { editable = "src/model_inference" }
 
 [[package]]
 name = "narwhals"
