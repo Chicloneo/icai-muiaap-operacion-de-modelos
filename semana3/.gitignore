@@ -9,3 +9,4 @@ __pycache__/
 *.egg-info/
 .env
 models/
+.DS_Store
