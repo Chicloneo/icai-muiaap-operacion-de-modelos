@@ -5,9 +5,9 @@ from __future__ import annotations
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Protocol
+from typing import Protocol, overload
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from model_packaging.contracts import (
     QualityBand,
@@ -15,7 +15,11 @@ from model_packaging.contracts import (
     WineQualityRequest,
 )
 
-ARTIFACT_SCHEMA_VERSION = "wine-quality-bundle-v1"
+from src.model_packaging.preprocess import PREPROCESSING_VERSION, FEATURE_NAMES
+
+import json
+
+ARTIFACT_SCHEMA_VERSION = "wine-quality-bundle-v1" #variables globales
 DEFAULT_BUNDLE_PATH = Path("models/wine_quality_bundle")
 MANIFEST_FILENAME = "manifest.json"
 MODEL_FILENAME = "model.joblib"
@@ -35,18 +39,37 @@ class WineQualityEstimator(Protocol):
     def predict_proba(self, features: list[list[float]]) -> Sequence[Sequence[float]]:
         """Devuelve probabilidades por fila."""
 
+@overload
+def test_validator(field:str):
+    print("test")
 
-class ArtifactManifest(BaseModel):
+@test_validator # <------- se ejecuta esta función primero siempre que llame a continuacion_de_test_validator
+def continuacion_de_test_validator(field:str):
+    print(field)
+
+
+
+class ArtifactManifest(BaseModel): #BaseModel hace que ArtifactManifest sea una clase de Pydantic y poder usar todos sus atributos/funciones
     """TODO: declara y valida los metadatos del bundle."""
 
     model_config = ConfigDict(extra="forbid")
 
-    schema_version: str
+    schema_version: str = Field(ARTIFACT_SCHEMA_VERSION)
     model_version: str = Field(min_length=1)
     preprocessing_version: str
     feature_names: tuple[str, ...]
     output_labels: tuple[QualityBand, ...]
     estimator_type: str = Field(min_length=1)
+
+    @field_validator("schema") # cuando se cree un objeto de esta clase, se activa @field_validator
+    @classmethod
+    def validate_schema_version(cls, value:str) -> str:
+        """
+        Impide crear el manifest si la versión es inválida
+        """
+        if value != ARTIFACT_SCHEMA_VERSION:
+            raise ValueError(f"Ha fallado la creación del manifest debido a que no cumple la versión {ARTIFACT_SCHEMA_VERSION}")
+        print("Se va a crear el manifest con este schema_version")
 
 
 @dataclass(frozen=True)
@@ -60,10 +83,25 @@ class LoadedModelBundle:
 def create_manifest(
     estimator: WineQualityEstimator, model_version: str
 ) -> ArtifactManifest:
-    """TODO: devuelve un manifiesto compatible con el contrato."""
+    """
+    El objetivo de esta función es, en base al estimator y model_version que recibe,
+    devolver un ArtifactManifest. 
+    Las variables mayúsculas son constantes y globales a todo el script (las puedo utilizar dentro de las clases)
+    """
 
-    raise NotImplementedError("Implementa create_manifest().")
+    return ArtifactManifest(
+        schema_version = ARTIFACT_SCHEMA_VERSION,
+        model_version = model_version,
+        preprocessing_version = PREPROCESSING_VERSION,
+        feature_names = FEATURE_NAMES,
+        output_labels = OUTPUT_LABELS,
+        estimator_type = type(estimator).__name__ # para que no devuelva <object ...>
+                                                  # __ es un atributo privado
+    )
 
+#json.loads ##########################
+#claves con comillas simples, es un diccionario de python
+#comillas dobles, es una representación en string de un json
 
 def save_model_bundle(
     bundle_path: Path,
@@ -72,7 +110,15 @@ def save_model_bundle(
 ) -> ArtifactManifest:
     """TODO: escribe manifest.json y model.joblib de forma segura."""
 
-    raise NotImplementedError("Implementa save_model_bundle().")
+    manifest_path: str = Path(bundle_path)
+
+    if manifest is not None:
+
+        with open(manifest_path / "manifest.json", "w") as m: #se normaliza la ruta para que de igual si es windows o linux
+            json.dump(manifest, m, indent=4, ensure_ascii=False)
+            
+
+
 
 
 def load_model_bundle(bundle_path: Path) -> LoadedModelBundle:
