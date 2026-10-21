@@ -10,7 +10,7 @@
 # No dejes un archivo de salida parcial si alguna fila es inválida.
 
 import argparse
-
+import sys
 import pandas as pd
 
 from .contracts import WineQualityRequest, SampleID
@@ -21,6 +21,7 @@ from .preprocess import preprocess_wine_request
 def read_wines(path):
 
     df = pd.read_csv(path, keep_default_na=False)
+    column_sample_id = df["sample_id"]
     df = df.drop("sample_id", axis=1)
 
     vinos_validados = []
@@ -29,7 +30,7 @@ def read_wines(path):
             vino_valido = WineQualityRequest(**row.to_dict())
             vinos_validados.append(vino_valido)
         except Exception as e:
-            raise ValueError(f"Error al validar el lote. Error en la muestra de vino \n {row}. Error: {e}")
+            raise ValueError(f"Error al validar el lote. Error en la muestra de vino {list(column_sample_id)[index]} \n {row}. Error: {e}")
 
     return vinos_validados
 
@@ -47,14 +48,14 @@ def main(argv=None):
     try:
         vinos_validados = read_wines(args.input)
     except ValueError as e: #porque hemos raiseado un ValueError
-        print(e)
+        print(e, file=sys.stderr) #los test esperan errores en  stderr y no en stdout
         return 2
 
     #Cargamos el modelo y falla si no existe
     try:
         model = load_wine_quality_model(args.model)
     except ValueError as e:
-        print(e)
+        print(e, file=sys.stderr) #los test esperan errores en  stderr y no en stdout
         return 2
 
     #Predecimos la calidad del vino
@@ -73,8 +74,8 @@ def main(argv=None):
         try:
             SampleID(sample_id=id)
         except Exception as e:
-            print(f"Error en el id '{id}', en la fila {index}. Debe ser un string no vacío.")
-            print(e)
+            print(f"Error en el id '{id}', en la fila {index}. Debe ser un string no vacío.", file=sys.stderr)
+            print(e, file=sys.stderr)
             return 2
         index+=1
 
