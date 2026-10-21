@@ -71,9 +71,10 @@ def main(argv=None):
     index = 1
     for id in columna_IDs:
         try:
-            SampleID(id)
+            SampleID(sample_id=id)
         except Exception as e:
             print(f"Error en el id '{id}', en la fila {index}. Debe ser un string no vacío.")
+            print(e)
             return 2
         index+=1
 
