@@ -19,6 +19,22 @@ uv run python -m model_inference.predict_file --input assets/inference_samples.c
 
 - `predict_file.py`: funciona como un CLI . Es el orquestador de toda la práctica.
 
+### Manifest
+
+El modelo requiere un `manifest.json` con las siguientes claves para funcionar (con los valores correpondientes):
+
+```text
+{
+    "schema_version": schema_version,
+    "model_version": model_version,
+    "preprocessing_version": preprocessing_version,
+    "feature_names": feature_names,
+    "output_labels": output_labels,
+    "estimator_name": estimator_name,
+    "estimator_params": estimator_params
+}
+```
+
 ## Comentarios del profesor
 
 Este es el único proyecto de código que recibe el alumnado. Implementad los
