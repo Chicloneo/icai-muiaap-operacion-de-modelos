@@ -18,11 +18,20 @@ FEATURE_NAMES = [
     "alcohol",
 ]
 
+# Porque lo pide así el enunciado y los test
+
+class WineFeatures:
+    def __init__(self, vector: list[float]):
+        self._vector = vector
+
+    def as_vector(self) -> list[float]:
+        return self._vector
+
 # Implementa WineFeatures y preprocess_wine_request(). El orden anterior debe
 # coincidir con el artefacto, no con un orden arbitrario del CSV.
 
-def preprocess_wine_request(wine_request: WineQualityRequest) -> list:
-   return [getattr(wine_request, name) for name in FEATURE_NAMES] #mantenemos el orden
+def preprocess_wine_request(wine_request: WineQualityRequest) -> WineFeatures:
+   return WineFeatures([getattr(wine_request, name) for name in FEATURE_NAMES]) #mantenemos el orden
 
 """
 wine_request.name for name in FEATURE_NAMES no funcionaría porque name es un string

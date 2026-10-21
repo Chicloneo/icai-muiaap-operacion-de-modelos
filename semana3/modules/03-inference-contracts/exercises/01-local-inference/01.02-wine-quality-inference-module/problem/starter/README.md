@@ -7,6 +7,8 @@ python src/model_inference/predict_file.py --input assets/inference_samples.csv 
 ```
 `inference_samples.csv` es un dataset de prueba. `predictions.csv` es un archivo con la predicción de la calidad del vino para cada muestra. Opcionalmente, puede añadirse `--model ruta/al/modelo.joblib` . Pero funciona con uno por defecto (no está en este repo).
 
+`inference_samples_error.csv` debe fallar (intencionadamente) la validación de la muestra `red-002`.
+
 ### Pipeline
 
 - `contracts.py`: contrato de datos de entrada y salida con Pydantic

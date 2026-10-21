@@ -5,7 +5,7 @@
 import joblib
 
 from contracts import WineQualityPrediction
-from preprocess import FEATURE_NAMES, PREPROCESSING_VERSION
+from preprocess import FEATURE_NAMES, PREPROCESSING_VERSION, WineFeatures
 
 from pathlib import Path
 
@@ -19,9 +19,11 @@ def load_wine_quality_model(path=DEFAULT_MODEL_PATH):
     return joblib.load(path)
 
 
-def infer_wine_quality(model, fila_preprocesada: list[float]) -> WineQualityPrediction:
+def infer_wine_quality(model, fila_preprocesada: WineFeatures) -> WineQualityPrediction:
     if model['feature_names'] != FEATURE_NAMES:
         raise ValueError(f"El modelo espera {FEATURE_NAMES} pero recibe {model['feature_names']}")
+
+    fila_preprocesada = fila_preprocesada.as_vector()
 
     estimator = model["estimator"]
     quality_band = str(estimator.predict([fila_preprocesada])[0])
