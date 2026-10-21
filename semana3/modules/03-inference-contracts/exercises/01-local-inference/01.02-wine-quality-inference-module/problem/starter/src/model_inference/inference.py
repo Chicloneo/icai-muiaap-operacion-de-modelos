@@ -38,7 +38,7 @@ def load_wine_quality_model(path=DEFAULT_MODEL_PATH):
     modelo = joblib.load(path)
 
     if "estimator" not in modelo:
-        raise ValueError(f"El modelo no tiene estimator y debe tenerlo")
+        raise ValueError(f"El modelo no tiene estimador y debe tenerlo. No hay clasificador compatible; falta la clave 'estimator'.")
 
     if "feature_names" not in modelo:
         raise ValueError(f"El modelo no tiene feature_names y debe tenerlo")
@@ -46,10 +46,10 @@ def load_wine_quality_model(path=DEFAULT_MODEL_PATH):
     if "model_version" not in modelo:
         raise ValueError(f"El modelo no tiene model_version y debe tenerlo")
 
-    if type(modelo.get("estimator")).__name__ == manifest["estimator_name"]:
+    if modelo.get('feature_names') != FEATURE_NAMES:
+        raise ValueError(f"El modelo espera feature_names: {FEATURE_NAMES} pero recibe {modelo['feature_names']}")
 
-        if modelo.get('feature_names') != FEATURE_NAMES:
-            raise ValueError(f"El modelo espera {FEATURE_NAMES} pero recibe {modelo['feature_names']}")
+    if type(modelo.get("estimator")).__name__ == manifest["estimator_name"]:
 
         if modelo.get("feature_names") != manifest["feature_names"]:
             raise ValueError("feature_names del modelo y manifest son distintos")
@@ -57,13 +57,14 @@ def load_wine_quality_model(path=DEFAULT_MODEL_PATH):
         if modelo.get("model_version")!=manifest["model_version"]:
             raise ValueError("model_version del modelo y del manifest son distintos")
 
-        if PREPROCESSING_VERSION != manifest["preprocessing_version"]:
-            raise ValueError("Versión del preprocesado no coincide con la del manifest")
 
         if type(modelo.get("estimator")).__name__ != manifest["estimator_name"]:
             #esta condición claramente en este caso no se va a cumplir
             #pero lo dejo aquí de momento
             raise ValueError("Nombre del estimador del modelo y del manifest no coinciden")
+
+        if PREPROCESSING_VERSION != manifest["preprocessing_version"]:
+            raise ValueError("Versión del preprocesado no coincide con la del manifest")
 
         model_params = modelo.get("estimator").get_params()
         for param in manifest["estimator_params"]:

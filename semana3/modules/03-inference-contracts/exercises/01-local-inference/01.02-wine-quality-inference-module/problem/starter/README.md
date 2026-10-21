@@ -35,6 +35,10 @@ El modelo requiere un `manifest.json` con las siguientes claves para funcionar (
 }
 ```
 
+### Pytests
+
+![Tests_pasados](assets/pytests.png)
+
 ## Comentarios del profesor
 
 Este es el único proyecto de código que recibe el alumnado. Implementad los
