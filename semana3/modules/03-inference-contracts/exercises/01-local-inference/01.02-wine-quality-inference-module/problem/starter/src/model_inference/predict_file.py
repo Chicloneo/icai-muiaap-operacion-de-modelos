@@ -62,7 +62,11 @@ def main(argv=None):
     predicciones = []
     for vino in vinos_validados:
         fila_preprocesada = preprocess_wine_request(vino)
-        prediccion = infer_wine_quality(model, fila_preprocesada)
+        try:
+            prediccion = infer_wine_quality(model, fila_preprocesada)
+        except ValueError as e:
+            print(e, file=sys.stderr) #los test esperan errores en  stderr y no en stdout
+            return 2
         predicciones.append(prediccion.model_dump())
 
     df_predicciones = pd.DataFrame(predicciones)
