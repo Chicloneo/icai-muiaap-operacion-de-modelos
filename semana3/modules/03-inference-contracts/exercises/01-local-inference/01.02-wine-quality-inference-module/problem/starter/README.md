@@ -3,11 +3,11 @@
 ## ¿Qué es esto?
 Modulo de predicción de calidad de vino. debe ejecutarse 
 ```bash
-python src/model_inference/predict_file.py --input assets/inference_samples.csv --output assets/predictions.csv 
+uv run python -m model_inference.predict_file --input assets/inference_samples.csv --output assets/predictions.csv 
 ```
 `inference_samples.csv` es un dataset de prueba. `predictions.csv` es un archivo con la predicción de la calidad del vino para cada muestra. Opcionalmente, puede añadirse `--model ruta/al/modelo.joblib` . Pero funciona con uno por defecto (no está en este repo).
 
-`inference_samples_error.csv` debe fallar (intencionadamente) la validación de la muestra `red-002`.
+`inference_samples_error.csv` debe fallar intencionadamente. Debe cambiarse los campos que se quieran y observar que el fallo raisea correctamente.
 
 ### Pipeline
 
