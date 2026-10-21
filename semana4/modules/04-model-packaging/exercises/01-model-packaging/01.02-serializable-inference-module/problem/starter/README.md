@@ -1,5 +1,20 @@
 # Starter — Bundle serializado de calidad de vino
 
+## Santi
+
+En starter, ejecutar:
+
+```bash
+uv run python -m model_packaging.predict_file \
+  --bundle assets/models/wine_quality_bundle \
+  --input ../../../../../../../../semana3/assets/03-wine-quality/inference_samples.csv \
+  --output .tmp/wine_predictions.csv
+```
+
+![Tests OK](assets/tests.png)
+
+## Comentarios profesor
+
 Este es el único proyecto de código que recibe el alumnado. Los contratos de
 entrada y el orden de las características ya vienen resueltos para que el
 taller se concentre en serialización, carga y validación.
