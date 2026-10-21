@@ -1,5 +1,5 @@
 """TODO: transformación de una muestra validada en el vector del modelo."""
-from contracts import WineQualityRequest
+from .contracts import WineQualityRequest
 
 PREPROCESSING_VERSION = "wine-red-features-v1"
 
@@ -18,7 +18,7 @@ FEATURE_NAMES = [
     "alcohol",
 ]
 
-# Porque lo pide así el enunciado y los test
+# Porque lo pide así el enunciado. Debemos pasar el test_inference_components.py, que pide devolver un as_vector.
 
 class WineFeatures:
     def __init__(self, vector: list[float]):

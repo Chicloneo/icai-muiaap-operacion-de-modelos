@@ -4,8 +4,8 @@
 # Comprueba las características del artefacto antes de llamar al clasificador.
 import joblib
 
-from contracts import WineQualityPrediction
-from preprocess import FEATURE_NAMES, PREPROCESSING_VERSION, WineFeatures
+from .contracts import WineQualityPrediction
+from .preprocess import FEATURE_NAMES, PREPROCESSING_VERSION, WineFeatures
 
 from pathlib import Path
 
@@ -16,6 +16,9 @@ DEFAULT_MODEL_PATH = PROJECT_ROOT / "models" / "wine_quality_classifier.joblib"
 
 
 def load_wine_quality_model(path=DEFAULT_MODEL_PATH):
+    if not path.exists():
+        raise ValueError(f"El modelo {path} no existe.")
+    
     return joblib.load(path)
 
 

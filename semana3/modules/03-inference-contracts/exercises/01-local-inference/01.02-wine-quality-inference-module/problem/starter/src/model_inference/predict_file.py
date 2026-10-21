@@ -1,7 +1,11 @@
 """TODO: script CLI que encadena contratos, preprocesado e inferencia."""
 
 # Desde starter:
-# uv run src/model_inference/predict_file.py --input assets/inference_samples.csv --output assets/predictions.csv 
+# uv run python -m model_inference.predict_file --input assets/inference_samples.csv --output assets/predictions.csv 
+# con -m le estamos diciendo a uv que model_inference es un módulo
+
+# Mal: `uv run src/model_inference/predict_file.py` porque model_inference ya es un paquete con __init__, 
+# así que lo puedo llamar
 
 # No dejes un archivo de salida parcial si alguna fila es inválida.
 
@@ -9,9 +13,9 @@ import argparse
 
 import pandas as pd
 
-from contracts import WineQualityRequest
-from inference import DEFAULT_MODEL_PATH, infer_wine_quality, load_wine_quality_model
-from preprocess import preprocess_wine_request
+from .contracts import WineQualityRequest, SampleID
+from .inference import DEFAULT_MODEL_PATH, infer_wine_quality, load_wine_quality_model
+from .preprocess import preprocess_wine_request
 
 
 def read_wines(path):
@@ -39,13 +43,21 @@ def main(argv=None):
     parser.add_argument("--model", default=DEFAULT_MODEL_PATH)
     args = parser.parse_args(argv)  # noqa: F841
 
+    #Validamos filas y falla si alguna no es válida
     try:
         vinos_validados = read_wines(args.input)
     except ValueError as e: #porque hemos raiseado un ValueError
         print(e)
         return 2
 
-    model = load_wine_quality_model(args.model)
+    #Cargamos el modelo y falla si no existe
+    try:
+        model = load_wine_quality_model(args.model)
+    except ValueError as e:
+        print(e)
+        return 2
+
+    #Predecimos la calidad del vino
     predicciones = []
     for vino in vinos_validados:
         fila_preprocesada = preprocess_wine_request(vino)
@@ -56,12 +68,16 @@ def main(argv=None):
     
     columna_IDs = pd.read_csv(args.input)["sample_id"]
 
-    index=1
+    index = 1
     for id in columna_IDs:
-        if pd.isna(id):
-            raise ValueError(f"Error. La muestra {index } no tiene ID")
+        try:
+            SampleID(id)
+        except Exception as e:
+            print(f"Error en el id '{id}', en la fila {index}. Debe ser un string no vacío.")
+            return 2
         index+=1
-        
+
+    #Añadimos la columna sample_id si todos son strings no vacíos
     df = pd.concat([columna_IDs, df_predicciones], axis=1)
     df.to_csv(args.output, index=False)
 
