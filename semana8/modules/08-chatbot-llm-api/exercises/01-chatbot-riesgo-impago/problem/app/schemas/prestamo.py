@@ -42,3 +42,11 @@ class PrestamoEntrada(BaseModel):
             return value
 
 # TODO: clase PrediccionSalida con probabilidad_impago (entre 0 y 1) y decision (aprobar, revisar o rechazar).
+
+class PrediccionSalida(BaseModel):
+
+    model_config = ConfigDict(extra='forbid')
+
+    probabilidad_impago: float = Field(ge=0, le=1)
+
+    decision: Literal["aprobar", "revisar", "rechazar"]
