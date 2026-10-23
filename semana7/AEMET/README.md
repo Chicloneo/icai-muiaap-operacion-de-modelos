@@ -1,5 +1,19 @@
 # Semana 7 - Práctica AEMET (Requests + AEMET)
 
+## ¿Qué hace esta práctica?
+
+Esta práctica es una introducción a las APIs (_Application Programming Interface_). Para ello utilizamos la librería `requests` de Python. En particular, hacemos un _request_ a la API de la AEMET (Agencia Estatal de Meteorología), para obtener datos sobre las temperaturas de cada día durante el mes de Octubre en Ciudad Universitaria, Madrid.
+
+Desde `AEMET/`, debe ejecutarse el siguiente comando:
+
+```bash
+uv run src/aemet/oct_19_ciu.py
+```
+
+Ello devolverá un `.csv` en una carpeta temporal con los datos citados.
+
+# Comentarios profesor
+
 Práctica complementaria de la semana 7: hacer peticiones HTTP con Python y la
 librería `requests` contra la API de la AEMET.
 
