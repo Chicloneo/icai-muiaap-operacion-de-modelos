@@ -13,6 +13,13 @@ VARIABLES = [
     "impagos_previos",
 ]
 
+RUTA_MODELO = "../models/modelo_impago.joblib"
+# mirar lo de .parent
+
 # TODO: cargar el modelo joblib una sola vez, al importar el modulo
+
+def load_model():
+    pass
+
 # TODO: funcion decidir(probabilidad) -> "aprobar", "revisar" o "rechazar" (umbrales en el enunciado)
 # TODO: funcion predecir(entrada) -> PrediccionSalida, usando VARIABLES para ordenar los valores
