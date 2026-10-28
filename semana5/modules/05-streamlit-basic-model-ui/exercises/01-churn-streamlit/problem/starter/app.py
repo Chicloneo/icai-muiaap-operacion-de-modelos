@@ -13,7 +13,74 @@ def collect_profile(st: Any) -> tuple[bool, dict[str, object]]:
     # TODO 1 (alumno): usa st.form("churn_form"), los cuatro widgets con las
     # claves indicadas en el README y st.form_submit_button. El formulario evita
     # inferencias durante cada edición. Compruébalo con el primer test de app.
-    raise NotImplementedError("STUDENT TASK: construye el formulario Churn")
+
+    #Ayuda de la documentación de Streamlit
+
+    form = st.form(key="churn_form", #string that identifies the form
+                   clear_on_submit=False, #If True, all widgets inside the form will be reset 
+                                    #to their default values after the user presses the Submit button.
+                    enter_to_submit=False, #submits the form when a user presses Enter
+                    border=True, #shows a border around the form
+                    width='stretch', #matches the width of the parent container
+                    height='content' #matches the height of its content
+                    )
+
+    with form:
+
+        st.slider(
+            label="Antigüedad", #what this slider is for.
+            min_value=0,
+            max_value=120,
+            value=12, #The value of the slider when it first renders.
+            step=1,
+            format=None, #how the interface displays values
+            key="tenure_months", #string to use as the unique key for the widget
+                                #la key guarda el valor en session_state al ejecutar otra vez de arriba a abajo el script
+            help="Choose your tenure months", #A tooltip that gets displayed next to the widget label.
+            label_visibility='visible', #displays the "help" tooltip when label_visibility="visible"
+            width='stretch'
+        ) #returns int in this case
+
+        st.number_input(
+            label="Gasto mensual",
+            min_value=0,
+            max_value=300,
+            value=60,
+            step=1,
+            format=None, #This does not impact the return value of the widget
+            key="monthly_spend_eur",
+            help="Choose your monthly spending (€)",
+            placeholder="Enter monthly spending... (required field)", #string displayed when the number input is empty
+            required=True, # requires a non-empty value 
+            label_visibility='visible',
+            icon=":material/paid:", #displays within the input field to the left of the value
+            width='stretch'
+        ) #int
+
+        st.slider(
+            label="Llamadas a soporte", 
+            min_value=0,
+            max_value=20,
+            value=1, 
+            step=1,
+            format=None,
+            key="support_calls", 
+            help="Select your support calls",
+            label_visibility='visible',
+            width='stretch'
+        ) #int
+
+        st.checkbox(
+            label="Contrato Anual",
+            value=False, #Inicialmente desactivado
+            key="has_annual_contract",
+            help="Selecciona si tienes contrato anual",
+            label_visibility='visible',
+            width='stretch',
+            wrap=True #If the label is too wide for the checkbox, it wraps onto additional lines
+        ) #True/False
+
+        st.form_submit_button("Calcular Riesgo") #True (False) if the button was (not) clicked
 
 
 def render_prediction(st: Any, result: ChurnPrediction) -> None:
@@ -28,7 +95,7 @@ def run_app(st: Any, predictor: Predictor) -> None:
     # TODO 2 (alumno): llama a collect_profile, ejecuta predictor(**values) solo
     # tras el submit y una única vez; convierte ValueError en un mensaje seguro.
     # Los tests de 0/1 llamadas y de error verifican este contrato.
-    raise NotImplementedError("STUDENT TASK: conecta el submit con predict()")
+    collect_profile(st)
 
 
 def main() -> None:
