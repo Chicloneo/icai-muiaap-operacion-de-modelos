@@ -46,17 +46,50 @@ def collect_values(st: Any) -> tuple[bool, dict[str, float]]:
     estable. Devuelve ``(submitted, values)`` sin llamar al gateway.
     """
 
-    raise NotImplementedError(
-        f"TODO: renderiza los {len(FIELD_SPECS)} campos de FIELD_SPECS"
+    values = {}
+
+    form = st.form(
+        key="wine_quality_form"
     )
+
+    with form:
+
+        for field in FIELD_SPECS:
+
+            number_input = st.number_input(
+                key = f"input_{field.name}",
+                label = field.label,
+                min_value = field.min_value,
+                max_value = field.max_value,
+                value = field.default,
+                step = field.step
+            )
+
+            values[field.name] = number_input
+
+        submitted = st.form_submit_button("Ejecutar inferencia")
+
+    if submitted:
+        return submitted, values
+    else:
+        return False, values
+
 
 
 def render_prediction(st: Any, prediction: PredictionPayload) -> None:
     """TODO: presenta los cuatro campos de ``PredictionPayload``."""
 
-    raise NotImplementedError(
-        "TODO: presenta quality_band, confidence y las dos versiones"
-    )
+    st.write("quality_band:")
+    st.write(prediction.quality_band)
+
+    st.write("confidence:")
+    st.write(prediction.confidence)
+
+    st.write("model_version:")
+    st.write(prediction.model_version)
+
+    st.write("preprocessing_version:")
+    st.write(prediction.preprocessing_version)
 
 
 def run_app(st: Any, gateway: InferenceGateway) -> None:
