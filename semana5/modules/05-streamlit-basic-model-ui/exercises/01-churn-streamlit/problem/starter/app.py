@@ -18,7 +18,7 @@ def collect_profile(st: Any) -> tuple[bool, dict[str, object]]:
 
     form = st.form(key="churn_form", #string that identifies the form
                    # clear_on_submit=False, #If True, all widgets inside the form will be reset 
-                                    #to their default values after the user presses the Submit button.
+                    #to their default values after the user presses the Submit button.
                     # enter_to_submit=False, #submits the form when a user presses Enter
                     # border=True, #shows a border around the form
                     # width='stretch', #matches the width of the parent container
@@ -35,7 +35,7 @@ def collect_profile(st: Any) -> tuple[bool, dict[str, object]]:
             # step=1,
             #format=None, #how the interface displays values
             key="tenure_months", #string to use as the unique key for the widget
-                                #la key guarda el valor en session_state al ejecutar otra vez de arriba a abajo el script
+            #la key guarda el valor en session_state al ejecutar otra vez de arriba a abajo el script
             #help="Choose your tenure months", #A tooltip that gets displayed next to the widget label.
             #label_visibility='visible', #displays the "help" tooltip when label_visibility="visible"
             #width='stretch'
@@ -80,7 +80,8 @@ def collect_profile(st: Any) -> tuple[bool, dict[str, object]]:
             #wrap=True #If the label is too wide for the checkbox, it wraps onto additional lines
         ) #True/False
 
-        submitted = st.form_submit_button("Calcular Riesgo") #True (False) if the button was (not) clicked
+        submitted = st.form_submit_button("Calcular riesgo") 
+        #True (False) if the button was (not) clicked
 
     values = {
             "tenure_months": tenure_months,
@@ -92,12 +93,28 @@ def collect_profile(st: Any) -> tuple[bool, dict[str, object]]:
     if submitted:
         return submitted, values
 
+    else:
+        return False, values
+
 
 def render_prediction(st: Any, result: ChurnPrediction) -> None:
     """Muestra etiqueta, score orientativo y explicación."""
     # TODO 3 (alumno): presenta label, risk_score y explanation con componentes
     # Streamlit. No recalcules el score. Compruébalo con el test de presentación.
-    raise NotImplementedError("STUDENT TASK: presenta la predicción")
+
+    #Predictor devuelve un objeto ChurnPrediction, que está definido como TypeDict
+    #así que hay que acceder a sus elementos como un diccionario
+    st.write(result["label"])
+    st.write("Riesgo: ")
+    st.write(result["risk_score"])
+
+    st.write("umbral 0,50")
+
+    if result["label"] == "Baja probable":
+        st.warning("Baja probable")
+
+    elif result["label"] == "Permanencia probable":
+        st.success("Permanencia probable")
 
 
 def run_app(st: Any, predictor: Predictor) -> None:
@@ -106,11 +123,14 @@ def run_app(st: Any, predictor: Predictor) -> None:
     # tras el submit y una única vez; convierte ValueError en un mensaje seguro.
     # Los tests de 0/1 llamadas y de error verifican este contrato.
     submitted, values = collect_profile(st)
-    prediccion = predictor(**values)
 
-    #Predictor devuelve un objeto ChurnPrediction, que está definido como TypeDict
-    #así que hay que acceder a sus elementos como un diccionario
-    st.write(prediccion["label"])
+    if submitted:
+
+        try:
+            prediccion = predictor(**values)
+            render_prediction(st, prediccion)
+        except: 
+            st.error("No se pudo calcular")
 
 
 def main() -> None:
