@@ -42,20 +42,22 @@ modifiquéis las constantes de ejemplo para «mejorar» la predicción.
 
 Completad una tabla:
 
-| Clave | Tipo | Se conserva entre reruns | Se puede limpiar | Por qué |
+| Clave o recurso | Dónde vive | ¿Sobrevive a un rerun? | ¿Se limpia al pulsar «Limpiar»? | Motivo |
 | --- | --- | --- | --- | --- |
-| `last_state` | TODO | TODO | TODO | TODO |
-| `telemetry` | TODO | TODO | TODO | TODO |
-| valores completos del formulario | TODO | TODO | TODO | TODO |
+| `last_state` | `st.session_state` | Sí | No, pero depende de session_state | Podemos construirlo como un diccionario que guarda valores, o como una variable que reasignamos |
+| `last_values` | `st.session_state` | Sí | No | ídem que `last_state` |
+| `telemetry` | sistema de logs/observabilidad | Sí | No | Registra metadatos, nunca secretos |
+| gateway / bundle | `st.cache_resource` | Sí | No | El bundle se carga una única vez, y está disponible en cada rerun |
+| respuesta de una petición | json | No | Sí | La respuesta que damos es distinta para cada usuario |
 
 ### 2. Máquina de estados
 
-| Estado | Evento de entrada | Qué se muestra | Acción permitida | Evidencia |
-| --- | --- | --- | --- | --- |
-| `idle` | Inicio/limpiar | TODO | TODO | TODO |
-| `loading` | Enviar formulario | TODO | TODO | TODO |
-| `success` | Payload válido | TODO | TODO | TODO |
-| `error` | Excepción controlada | TODO | TODO | TODO |
+| Estado | Evento de entrada| Zona de pantalla que cambia | Acción / evidencia |
+| --- | --- | --- | --- |
+| `idle` | Inicio o limpiar | Formulario disponible; sin resultado anterior. | Enviar una predicción. Evidencia: estado inicial. |
+| `loading` | Envío válido | Zona de operación indica que se está procesando; evita mostrar resultados antiguos como actuales. | Esperar. Evidencia: transición visible a `loading`. |
+| `success` | Respuesta válida | Mostrar categoría, confianza y latencia; añadir aviso si supera 300 ms; trazabilidad si se selecciona. | Revisar el resultado o volver a enviar. Evidencia: respuesta y `request_id`. |
+| `error` | Fallo controlado | Mensaje comprensible y seguro, sin traceback ni detalles internos; conservar el formulario para corregir o reintentar. | Corregir la entrada o reintentar más tarde. Evidencia: tipo de error registrado sin datos sensibles. |
 
 Una respuesta con salida válida pero latencia superior a 300 ms permanece en
 `success` y añade una señal técnica de lentitud.
