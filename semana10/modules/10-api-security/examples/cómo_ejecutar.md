@@ -62,3 +62,5 @@ LOCUST_API_KEY=demo-limits-key uv run --group load locust \
 ```
 
 y pulsamos enter. Si falla, abrir `http://localhost:8089`, y personalizar las peticinoes. Locust es una librería Python para simular APIs y ver su comportamiento (sobre todo en casos de estrés).
+
+Con `--headless` antes de `-u 20` se visualiza en la terminal.
