@@ -1,4 +1,8 @@
-"""Solución de la primera interfaz Streamlit para Wine Quality."""
+"""Solución de la primera interfaz Streamlit para Wine Quality.
+En la terminal, para arrancar la app:
+export MODEL_UI_BUNDLE="/Users/santiago/Desktop/MLOps/icai-muiaap-operacion-de-modelos/
+semana4/modules/04-model-packaging/exercises/01-model-packaging/01.02-serializable-inference-module/
+problem/starter/assets/models/wine_quality_bundle_migrated"""
 
 from __future__ import annotations
 
