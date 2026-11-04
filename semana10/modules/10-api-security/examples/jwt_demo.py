@@ -10,7 +10,7 @@ firma tokens sin pedir contraseña. En un sistema real el token lo emite el IdP
 
     # Emitir un token válido (15 min) y usarlo
     TOKEN=$(curl -s -X POST http://127.0.0.1:8000/token \\
-      -H "Content-Type: application/json" -d '{"sub": "ana"}' | jq -r .access_token)
+      -H "Content-Type: application/json" -d '{"sub": "Santi"}' | jq -r .access_token)
     curl -i http://127.0.0.1:8000/v1/me -H "Authorization: Bearer $TOKEN"
 
     # Fabricar tokens defectuosos (solo demo): caducado u otra audiencia -> 401
