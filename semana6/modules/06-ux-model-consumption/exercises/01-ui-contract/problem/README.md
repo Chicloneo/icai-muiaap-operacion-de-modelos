@@ -67,12 +67,24 @@ Una respuesta con salida válida pero latencia superior a 300 ms permanece en
 Justificad:
 
 - qué función se protege con `st.cache_resource`;
+ la que construye el gateway y carga el bundle, así se reutiliza
+  el modelo entre reruns.
 - qué dato no debe cachearse como recurso;
+los valores del formulario y la predicción de cada persona,
+  porque pertenecen a una petición concreta. 
 - qué componente representa `loading`, resultado, advertencia y trazabilidad;
+`st.status` muestra `loading`; `st.success` presenta la
+  categoría y unas métricas muestran confianza, latencia y nivel de confianza.
 - por qué la confianza se presenta con una métrica y un mensaje, no como una
   barra de progreso;
+porque la confianza no 
+  garantiza que la predicción sea correcta. Se muestra como porcentaje,
+  acompañado de un mensaje para interpretarla.
 - qué mensaje se muestra con confianza baja;
-- qué recuperación se ofrece para bundle ausente, timeout y error de entrada.
+ «El resultado es orientativo y requiere revisión». 
+- qué recuperación se ofrece para bundle ausente, timeout y error de entrada;
+ si falta el bundle, comprobar su configuración. Ante un timeout, esperar unos segundos y reintentar. Si falla la entrada, corregir los campos y
+  volver a enviar.
 
 ## Criterios de aceptación
 
