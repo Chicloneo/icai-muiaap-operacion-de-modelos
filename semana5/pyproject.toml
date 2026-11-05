@@ -31,6 +31,7 @@ packages = [
 
 [tool.pytest.ini_options]
 pythonpath = [
+    "modules/05-streamlit-basic-model-ui/solutions/02-first-streamlit",
     "modules/05-streamlit-basic-model-ui/solutions/02-first-streamlit/src",
 ]
 testpaths = [

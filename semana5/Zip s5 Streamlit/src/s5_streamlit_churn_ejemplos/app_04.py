@@ -1,0 +1,37 @@
+import sys
+from pathlib import Path
+
+import streamlit as st
+
+project_root = Path(__file__).resolve().parents[2]
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
+from demo_streamlit_s5_20261007_200403_272110.model import predict
+
+st.set_page_config(page_title="S5 · Churn sintético")
+st.title("¿Qué cliente podría darse de baja?")
+st.caption("Regla docente sintética; no es una probabilidad calibrada.")
+simulate_error = st.checkbox("Demo docente: provocar un error de contrato", value=False)
+with st.form("churn_form"):
+    tenure = st.number_input("Antigüedad (meses)", min_value=0, max_value=120, value=2, step=1)
+    spend = st.number_input("Gasto mensual (EUR)", min_value=0.0, max_value=300.0, value=95.0, step=1.0)
+    calls = st.number_input("Llamadas a soporte", min_value=0, max_value=20, value=4, step=1)
+    annual = st.checkbox("Contrato anual", value=False)
+    submitted = st.form_submit_button("Calcular riesgo")
+
+if submitted:
+    values = {"tenure_months": tenure, "monthly_spend_eur": spend,
+              "support_calls": calls, "has_annual_contract": annual}
+    if simulate_error:
+        values["tenure_months"] = -1
+    try:
+        result = predict(**values)
+    except ValueError:
+        st.error("No se pudo calcular el riesgo. Revisa los datos e inténtalo de nuevo.")
+    else:
+        st.subheader(result["label"])
+        st.metric("Score orientativo (0 a 1)", f"{result['risk_score']:.2f}")
+        st.write(result["explanation"])
+else:
+    st.info("Completa el formulario y pulsa Calcular riesgo.")
