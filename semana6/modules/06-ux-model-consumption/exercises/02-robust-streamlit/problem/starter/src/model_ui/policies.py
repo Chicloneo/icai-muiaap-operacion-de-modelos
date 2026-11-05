@@ -47,7 +47,7 @@ def classify_latency(
 
     if latency_ms < 0:
         raise ValueError("latency_ms debe ser un número positivo")
-    elif latency_ms < policy.target_ms:
+    elif latency_ms <= policy.target_ms:
         return "within_target"
     else:
         return "above_target"
