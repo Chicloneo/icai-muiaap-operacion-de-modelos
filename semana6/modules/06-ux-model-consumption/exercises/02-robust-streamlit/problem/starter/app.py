@@ -76,13 +76,54 @@ def collect_values(st: Any) -> tuple[bool, dict[str, float]]:
 def get_cached_gateway(st: Any, bundle_value: str | None) -> InferenceGateway:
     """TODO: usa `st.cache_resource` sobre el gateway, no sobre la respuesta."""
 
-    raise NotImplementedError("TODO: cachea el gateway heredado de S5")
+    @st.cache_resource
+    def cached_gateway(configured_bundle: str | None) -> InferenceGateway:
+        return build_gateway(bundle_value=configured_bundle)
+
+    return cached_gateway(bundle_value)
 
 
 def render_state(st: Any, state: UiState, target: Any | None = None) -> None:
     """TODO: presenta idle/loading/success/error en un target de Streamlit."""
 
-    raise NotImplementedError("TODO: renderiza el estado sin mostrar excepciones")
+    container = target if target is not None else st
+    with container.container():
+        if state.phase == "idle":
+            container.info("Completa el formulario y ejecuta la inferencia.")
+        elif state.phase == "loading":
+            container.info("La inferencia está en curso…")
+        elif state.phase == "success" and state.view is not None:
+            view = state.view
+            container.success(view.quality_label)
+            metrics = container.columns(3)
+            metrics[0].metric("Categoría", view.quality_label)
+            metrics[1].metric(
+                "Confianza", f"{view.confidence:.0%}", view.confidence_label
+            )
+            metrics[2].metric(
+                "Latencia", f"{view.latency_ms:.1f} ms", view.latency_label
+            )
+            if view.confidence_level == "low":
+                container.warning(view.confidence_message)
+            else:
+                container.info(view.confidence_message)
+            if view.latency_status == "above_target":
+                container.warning(view.latency_message)
+            with container.expander("Detalles de la inferencia"):
+                container.write(f"Request ID: {state.request_id}")
+                container.write(f"Versión del modelo: {view.model_version}")
+                container.write(
+                    "Versión del preprocesado: "
+                    f"{view.preprocessing_version}"
+                )
+        elif state.phase == "error" and state.error is not None:
+            container.error(state.error.title)
+            container.write(state.error.message)
+            container.info(state.error.recovery)
+            with container.expander("Detalles del error"):
+                container.write(f"Request ID: {state.error.request_id}")
+        else:
+            container.error("El estado de inferencia no contiene datos válidos.")
 
 
 def main() -> None:

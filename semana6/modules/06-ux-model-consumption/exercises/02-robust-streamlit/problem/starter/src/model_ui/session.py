@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from collections.abc import MutableMapping
 
+from model_ui.contracts import UiState
+from model_ui.telemetry import Telemetry
+
 LAST_STATE_KEY = "last_state"
 TELEMETRY_KEY = "telemetry"
 LAST_VALUES_KEY = "last_values"
@@ -12,11 +15,13 @@ LAST_VALUES_KEY = "last_values"
 def initialize_session_state(
     session_state: MutableMapping[str, object],
 ) -> None:
-    session_state = {}
+    session_state.setdefault(LAST_STATE_KEY, UiState(phase="idle"))
+    session_state.setdefault(LAST_VALUES_KEY, {})
+    session_state.setdefault(TELEMETRY_KEY, Telemetry())
 
 
 def clear_last_state(session_state: MutableMapping[str, object]) -> None:
     """TODO: vuelve a idle sin perder la telemetría acumulada."""
 
-    ultimo_elem = list(session_state)[-1]
-    session_state.pop(ultimo_elem)
+    session_state[LAST_STATE_KEY] = UiState(phase="idle")
+    session_state[LAST_VALUES_KEY] = {}
