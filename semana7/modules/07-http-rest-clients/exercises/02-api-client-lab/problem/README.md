@@ -23,6 +23,8 @@ En otra terminal ejecuta el `GET /health` de la [guía curl](../../../examples/c
 **Comprobación:** obtienes `200`, `status: ok`, `model_status: ready` y un
 `request_id`.
 
+![](curl_health.png)
+
 ## 1. Observar el contrato con curl
 
 Ejecuta el POST válido y el inválido ya preparados.
