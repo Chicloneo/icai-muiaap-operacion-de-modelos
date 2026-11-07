@@ -55,6 +55,7 @@ def obtener_idema():
 
 def clima_ciu_octubre(path_params:dict) -> DataFrame:
 
+    #creamos la clave "idema"
     path_params["idema"] = obtener_idema()
 
     url_ciu = ENDPOINT_CLIMATOLOGIAS_DIARIAS.format(**path_params)
