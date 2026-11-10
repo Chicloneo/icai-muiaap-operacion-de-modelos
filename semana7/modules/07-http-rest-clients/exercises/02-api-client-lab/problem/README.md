@@ -103,6 +103,8 @@ petición manualmente.
 **TODO 2 opcional:** prepara una tabla de evidencia con salud, éxito y
 validación.
 
+Hecho [aquí](../../../examples/postman/README.md).
+
 ## 3. Completar el cliente Python
 
 Trabaja en `starter/client.py` y ejecuta:
@@ -136,6 +138,8 @@ timeout y conexión.
 que no sea un objeto JSON. Comprueba el test de contrato de salida.
 
 ## Evidencia final
+
+![](tests_ok.png)
 
 - cinco tests verdes;
 - salida de un `200` y un `422`;
