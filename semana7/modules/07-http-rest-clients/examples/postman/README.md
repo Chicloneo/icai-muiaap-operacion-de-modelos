@@ -15,20 +15,36 @@ avanzados.
 En parejas, una persona maneja Postman y otra comprueba el contrato.
 
 1. Abrir `Health`, enviarla y localizar status, header y body.
+
+![](img/1_health.png)
+
 2. Abrir `Prediction - valid (200)` y revisar método, URL, headers y body antes
    de pulsar **Send**.
+
+![](img/2_valid.png)
+
 3. Registrar código, `Content-Type`, `X-Request-Id`, etiqueta y puntuación.
 4. Abrir `Prediction - invalid (422)` y localizar el campo rechazado.
+
+![](img/3_invalid.png)
+
 5. Explicar por qué la respuesta es `422` y no `400`.
+
+Porque el campo vibration_mm_s no está en el formato correcto
+
 6. Cambiar manualmente la URL a `/v1/prediction` y anticipar el `404`.
+
+![](img/4_404.png)
+
+No encuentra el recurso
 
 ### Evidencia
 
 | Caso | Método y path | Status | `request_id` | Qué corregiría |
 |---|---|---:|---|---|
-| Salud | | | | |
-| Predicción válida | | | | |
-| Contrato inválido | | | | |
+| Salud | `GET /health` | `200` | El de `X-Request-Id` |  |
+| Predicción válida | `POST /v1/predictions` | `200` | El de `X-Request-Id` |  |
+| Contrato inválido | `POST /v1/predictions` | `422` | El de `X-Request-Id` | Enviar `vibration_mm_s` como número |
 
 Si Postman no funciona en un equipo, se trabaja por parejas. Como último
 fallback, se construye la petición sin enviarla y se contrasta con las
