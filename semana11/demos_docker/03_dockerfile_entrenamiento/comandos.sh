@@ -1,7 +1,7 @@
 # Demo 3 · Tu primer Dockerfile (con uv)
 # (Opcional, en local) uv run train.py   -> mismo script fuera de Docker
 # (Recomendado) uv lock                  -> genera uv.lock y la imagen lo usará
-docker build -t iris-train:1.0 .
+docker build -t iris-train:1.0 . #iris train es como yo llamo a mi imagen
 docker images iris-train
 
 # 1) Sin volumen: el modelo se guarda DENTRO del contenedor
