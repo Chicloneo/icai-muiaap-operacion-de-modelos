@@ -55,13 +55,17 @@ class HttpInferenceGateway:
 
         # TODO S7.1: envia POST a self._prediction_url con json={"features": ...},
         # Accept application/json y self._timeout. Compruebalo con el test de llamada.
+        
+        response = self._session.post(url=self._prediction_url,
+                        json={"features": dict(values)},
+                        headers={"Accept": "application/json"},
+                        timeout=self._timeout)
         # TODO S7.2: traduce Timeout, ConnectionError y RequestException a los
         # errores de dominio que ya entiende PredictionController.
         # TODO S7.3: lee un objeto JSON, conserva request_id y diferencia 422/503
         # del resto de errores HTTP.
         # TODO S7.4: valida body["prediction"] como PredictionPayload; un dict sin
         # validar no satisface el contrato de salida.
-        raise NotImplementedError("Completa los TODO S7.1-S7.4")
 
     @staticmethod
     def _read_object(response: Any) -> dict[str, Any]:
