@@ -59,7 +59,7 @@ vuelve a ejecutarlo antes de continuar.
 1. Constructor: validar `base_url` y `timeout`; aceptar una sesión inyectada.
 2. Camino feliz: enviar `{"features": ...}` a `/v1/predictions`.
 3. Respuesta: aceptar 2xx, guardar el ID remoto en `last_request_id` para
-   diagnóstico y validar `prediction`. El controlador mantiene su ID local.
+   diagnóstico y validar `predviction`. El controlador mantiene su ID local.
 4. Errores: mapear 422, 503, timeout, conexión, otros status y JSON inválido.
 5. Integración: priorizar `MODEL_API_URL` en `build_gateway`.
 
