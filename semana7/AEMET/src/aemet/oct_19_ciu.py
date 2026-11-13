@@ -2,11 +2,19 @@ import requests
 import pandas as pd
 from pandas import DataFrame
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+# Carga las variables del archivo .env
+load_dotenv()
+
+# Obtiene la API key
+api_key = os.getenv("AEMET_API_KEY")
 
 SERVER = "https://opendata.aemet.es/opendata"
 
 HEADERS = {
-    "api_key" : "REDACTED_API_KEY"
+    "api_key" : api_key
 }
 
 ENDPOINT_CLIMATOLOGIAS_DIARIAS = (
