@@ -89,6 +89,8 @@ def main():
 
     df.to_csv(OUTPUT_PATH,index=False)
 
+    print(f"Datos en {OUTPUT_PATH}")
+
 
 if __name__ == "__main__":
     main()
