@@ -29,16 +29,19 @@ def leer_argumentos(texto):
 
 # TODO: definir_tool() -> dict con la definicion de la tool, sacando "parameters" de PrestamoEntrada
 def definir_tool() -> dict:
-    esquema = PrestamoEntrada.model_json_schema()  # (1) el JSON Schema de PrestamoEntrada
+
+    esquema = PrestamoEntrada.model_json_schema() 
 
     return {
         "type": "function",
         "function": {
-            "name": NOMBRE_TOOL,          # (2) qué nombre
-            "description": "descripción de la función",   # (3) qué le cuentas al LLM
-            "parameters": esquema,    # (4) qué parte del esquema va aquí
+            "name": NOMBRE_TOOL,  
+            "description": "Esta es una tool que calcula el riesgo de impago. \
+                Para poder usarla necesitas los 6 datos del usuario", 
+            "parameters": esquema, 
         },
     }
+
 # TODO: ejecutar_tool(nombre, argumentos_json) -> dict con "ok" True/False
 #       (tool desconocida, JSON roto, datos invalidos o campos inventados -> ok False con el error)
 def ejecutar_tool(nombre, argumentos_json) -> dict:
@@ -64,27 +67,43 @@ def ejecutar_tool(nombre, argumentos_json) -> dict:
 # TODO: responder(mensajes, llm) -> ChatSalida, con el bucle LLM -> tool -> LLM (maximo MAX_VUELTAS)
 def responder(mensajes, llm) -> ChatSalida:
 
-    resultado = llm.completar(mensajes, 
-                    herramientas=herramienta)
 
-    tool = ejecutar_tool(nombre=NOMBRE_TOOL, argumentos_json=mensajes)
+    historial = [{"role": "system", "content": SISTEMA}]
+    for m in mensajes:
+        historial.append({"role": m.role, "content": m.content})
 
-    i=1
-    while i<=MAX_VUELTAS or tool is not None:
+    herramienta = None 
 
-        resultado = llm.completar(mensajes, 
-                    herramientas=herramienta)
+    for _ in range(MAX_VUELTAS):
 
-        tool = ejecutar_tool(nombre=NOMBRE_TOOL, argumentos_json=mensajes)
+        # ¿puedes contestar o quieres una tool?
+        respuesta = llm.completar(historial, [definir_tool()])
 
-        herramienta = HerramientaUsada(
-                            nombre="Nombre_Herramienta_1",
-                            argumentos=definir_tool(),
-                            resultado=tool
-                        )
+        if not respuesta.get("tool_calls"):
+            return ChatSalida(respuesta=respuesta["content"], herramienta=herramienta)
 
-        i+=1
+        historial.append(respuesta)
+
+        # podría pedir varias tools
+        for llamada in respuesta["tool_calls"]:
+            nombre = llamada["function"]["name"]
+            argumentos_json = llamada["function"]["arguments"]
+
+            resultado = ejecutar_tool(nombre, argumentos_json)
+
+            herramienta = HerramientaUsada(
+                nombre=nombre,
+                argumentos=leer_argumentos(argumentos_json),
+                resultado=resultado,
+            )
+
+            historial.append({
+                "role": "tool",
+                "tool_call_id": llamada["id"],
+                "content": json.dumps(resultado),
+            })
 
     return ChatSalida(
-        respuesta=resultado["content"],
+        respuesta="No he podido completar la consulta con los datos disponibles.",
+        herramienta=herramienta,
     )
