@@ -63,13 +63,28 @@ def ejecutar_tool(nombre, argumentos_json) -> dict:
     
 # TODO: responder(mensajes, llm) -> ChatSalida, con el bucle LLM -> tool -> LLM (maximo MAX_VUELTAS)
 def responder(mensajes, llm) -> ChatSalida:
-    
-    for i in range(MAX_VUELTAS):
+
+    resultado = llm.completar(mensajes, 
+                    herramientas=herramienta)
+
+    tool = ejecutar_tool(nombre=NOMBRE_TOOL, argumentos_json=mensajes)
+
+    i=1
+    while i<=MAX_VUELTAS or tool is not None:
+
+        resultado = llm.completar(mensajes, 
+                    herramientas=herramienta)
 
         tool = ejecutar_tool(nombre=NOMBRE_TOOL, argumentos_json=mensajes)
-        llm.completar(mensajes, herramientas=HerramientaUsada)
+
+        herramienta = HerramientaUsada(
+                            nombre="Nombre_Herramienta_1",
+                            argumentos=definir_tool(),
+                            resultado=tool
+                        )
+
+        i+=1
 
     return ChatSalida(
-        respuesta="",
-        herramienta=HerramientaUsada,
+        respuesta=resultado["content"],
     )

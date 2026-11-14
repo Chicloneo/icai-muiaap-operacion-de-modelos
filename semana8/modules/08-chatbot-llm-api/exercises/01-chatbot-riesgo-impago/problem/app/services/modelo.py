@@ -35,10 +35,10 @@ def decidir(probabilidad):
 
 def predecir(entrada: PrestamoEntrada):
 
-    diccionario_entrada = list(entrada.model_dump())
+    diccionario_entrada = entrada.model_dump()
 
     #Explicación de esta línea en el notebook
-    probabilidad_impago = MODELO.predict_proba([diccionario_entrada[i] for i in VARIABLES])[0][1]
+    probabilidad_impago = MODELO.predict_proba([[diccionario_entrada[variable] for variable in VARIABLES]])[0][1]
 
     decision = decidir(probabilidad_impago)
 
