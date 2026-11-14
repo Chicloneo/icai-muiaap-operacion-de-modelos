@@ -33,6 +33,11 @@ st.markdown(
         background: white; border-radius: 14px; padding: 12px 16px; margin-bottom: 8px;
         box-shadow: 0 1px 4px rgba(0,0,0,.06);
     }}
+    /* El tema oscuro del navegador pinta el texto de blanco; sobre las cajas
+       blancas del chat no se lee. Forzamos el texto a negro dentro de ellas. */
+    [data-testid="stChatMessage"] :is(p, li, h1, h2, h3, h4, h5, h6, blockquote, strong, em, a) {{
+        color: {NEGRO} !important;
+    }}
     [data-testid="stSidebar"] {{ background: {NEGRO}; }}
     [data-testid="stSidebar"] * {{ color: #f2f2f2; }}
     [data-testid="stSidebar"] .stButton button {{
