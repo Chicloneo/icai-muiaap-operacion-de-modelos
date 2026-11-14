@@ -16,7 +16,7 @@ VARIABLES = [
 # TODO: cargar el modelo joblib una sola vez, al importar el modulo
 
 def load_model():
-    joblib.load(MODEL_PATH)
+    return joblib.load(MODEL_PATH)
 
 MODELO = load_model()
 
@@ -35,8 +35,10 @@ def decidir(probabilidad):
 
 def predecir(entrada: PrestamoEntrada):
 
+    diccionario_entrada = list(entrada.model_dump())
+
     #Explicación de esta línea en el notebook
-    probabilidad_impago = MODELO.predict_proba([list(entrada.model_dump().values())])[0][1]
+    probabilidad_impago = MODELO.predict_proba([diccionario_entrada[i] for i in VARIABLES])[0][1]
 
     decision = decidir(probabilidad_impago)
 

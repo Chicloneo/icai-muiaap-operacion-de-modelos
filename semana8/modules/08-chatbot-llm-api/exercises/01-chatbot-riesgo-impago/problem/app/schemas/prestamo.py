@@ -34,7 +34,7 @@ class PrestamoEntrada(BaseModel):
 
         edad = info.data.get("edad")
 
-        if value > edad - 16:
+        if edad is not None and value > edad - 16:
             raise ValueError(f"La antiguedad laboral no puede ser mayor que la edad-16."
                              f"Antiguedad laboral: {value}, "
                              f"Edad: {edad}")
